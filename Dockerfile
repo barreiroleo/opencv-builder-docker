@@ -10,12 +10,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ninja-build \
     pkg-config \
+    libpng-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /tmp/opencv
 RUN curl -fsSL "https://github.com/opencv/opencv/archive/refs/tags/${OPENCV_VERSION}.tar.gz" \
     | tar -xz --strip-components=1
 
+# https://docs.opencv.org/4.x/db/d05/tutorial_config_reference.html
 RUN cmake -S . -B build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr/local \
@@ -31,7 +33,7 @@ RUN cmake -S . -B build -G Ninja \
     -DWITH_IMGCODEC_HDR=ON -DWITH_IMGCODEC_SUNRASTER=OFF -DWITH_IMGCODEC_PXM=OFF \
     -DWITH_IMGCODEC_PFM=OFF -DWITH_IMGCODEC_GIF=ON \
     # - External libraries needed
-    -DWITH_PNG=OFF -DWITH_SPNG=OFF -DWITH_JPEG=OFF -DWITH_TIFF=OFF -DWITH_WEBP=OFF \
+    -DWITH_PNG=ON -DWITH_SPNG=OFF -DWITH_JPEG=OFF -DWITH_TIFF=OFF -DWITH_WEBP=OFF \
     -DWITH_OPENJPEG=OFF -DWITH_JASPER=OFF -DWITH_OPENEXR=OFF -DWITH_JPEGXL=OFF \
     # - Integrations
     -DWITH_GDAL=OFF -DWITH_GDCM=OFF \
