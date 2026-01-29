@@ -1,4 +1,4 @@
-FROM ubuntu:25.10 AS opencv-builder
+FROM ubuntu:25.10 AS builder
 
 ARG OPENCV_VERSION=4.13.0
 ENV DEBIAN_FRONTEND=noninteractive
@@ -55,3 +55,14 @@ RUN cmake -S . -B build -G Ninja \
 RUN cmake --build build --target install/strip -j $(nproc)\
     && rm -rf /tmp/opencv
 
+# ---------------------------------------------------------
+FROM ubuntu:25.10
+
+# /usr/local/include/*
+# /usr/local/lib/*.so
+# /usr/local/lib/pkgconfig/*
+COPY --from=builder /usr/local /usr/local
+
+RUN ldconfig
+
+WORKDIR /
